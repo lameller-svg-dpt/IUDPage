@@ -15,7 +15,7 @@ except Exception:
         pass
 
 app = Dash(__name__)
-
+server = app.server
 # Calcular fechas: Contacto 1 = hoy, Contacto 2 = ayer, etc.
 ho = date.today()
 fechas = [ho - timedelta(days=i) for i in range(0, 5)]  # 0,1,2,3
