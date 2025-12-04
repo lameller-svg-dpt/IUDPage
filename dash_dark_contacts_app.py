@@ -1,3 +1,6 @@
+# Dash_dark_contacts_app.py
+# Página Dash oscura, estilo futurista, muestra 4 contactos con fechas: hoy, ayer, -2 y -3 días.
+# Para ejecutar: pip install dash
 # python Dash_dark_contacts_app.py
 
 from datetime import date, timedelta
@@ -15,10 +18,10 @@ except Exception:
         pass
 
 app = Dash(__name__)
-server = app.server
+
 # Calcular fechas: Contacto 1 = hoy, Contacto 2 = ayer, etc.
 ho = date.today()
-fechas = [ho - timedelta(days=i) for i in range(0, 5)]  # 0,1,2,3
+fechas = [ho - timedelta(days=i) for i in range(0, 4)]  # 0,1,2,3
 
 # Formato de fecha legible (ej: 04 diciembre 2025) — intenta usar locale si está disponible
 def formato_fecha(d):
@@ -78,9 +81,11 @@ logo_style = {
     'letterSpacing': '1.5px',
 }
 
+from dash import dcc, Output, Input
+
 app.layout = html.Div([
     html.Div([
-        html.Div("Dashboard, fecha de contactos - IUDPT", style={**logo_style, 'color': '#cfeffa'}),
+        html.Div("DASH Futurista — Contactos", style={**logo_style, 'color': '#cfeffa'}),
         html.Div(ho.strftime('%A, %d %B %Y'), style={'opacity': '0.6', 'fontSize': '13px'})
     ], style=header),
 
@@ -91,9 +96,21 @@ app.layout = html.Div([
             html.Div(formato_fecha(fechas[i]), style=date_style),
             html.Div(style=accent)
         ], style=card_style)
-        for i in range(5)
+        for i in range(4)
     ], style={'maxWidth': '520px'})
+], style={'maxWidth': '520px'}),
+
+    dcc.Interval(id='timer', interval=60*1000, n_intervals=0)
 ], style=page_style)
 
+# Callback para refrescar las fechas cada minuto
+@app.callback(
+    Output(component_id=None, component_property=None),
+    Input('timer', 'n_intervals')
+)
+def refresh(_):
+    return
+
 if __name__ == '__main__':
-    app.run(debug=True, port=8050)
+    # Modo local; Render no usa esto, usa Gunicorn
+    app.run(debug=True)
